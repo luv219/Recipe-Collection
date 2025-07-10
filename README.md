@@ -40,8 +40,6 @@ campus-cravings/
 │   └── style.css
 ├── js/
 │   └── main.js
-├── images/
-│   └── *.jpg (9 images for each recipe)
 └── README.md
 ```
 
