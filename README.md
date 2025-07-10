@@ -58,7 +58,7 @@ campus-cravings/
 1. **Download or clone** the repository:
 
    ```bash
-   git clone https://github.com/your-username/campus-cravings.git
+   git clone https://github.com/luv219/Recipe-Collection.git
    ```
 
 2. Open `index.html` in any modern browser.
