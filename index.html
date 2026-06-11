@@ -2,37 +2,426 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Recipe Vault</title>
-  <link rel="stylesheet" href="css/style.css">
-  <script src="js/main.js" defer></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Campus Cravings – Gourmet Student Recipe Collection</title>
+  <meta name="description" content="Fuel your college days with delicious, easy-to-cook, budget-friendly recipes designed for students. Enjoy interactive kitchen timers, servings scaling, and step-by-step cooking guides." />
+  
+  <!-- Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,500&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://kit.fontawesome.com/a2e1e6ea5e.js" crossorigin="anonymous"></script>
+
+  <!-- Styles & Scripts -->
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="js/recipes-data.js" defer></script>
+  <script src="js/main.js" defer></script>
 </head>
 <body>
-  <header class="header">
-    <div class="container">
-      <h1><i class="fas fa-utensils"></i> Campus Cravings</h1>
-      <p class="tagline">Fuel your day with flavor!</p>
+  <!-- Global App Header -->
+  <header class="app-header glass">
+    <div class="header-container">
+      <a href="#/" class="logo-link" id="homeLogoLink">
+        <h1 class="logo"><i class="fas fa-utensils"></i> Campus Cravings</h1>
+      </a>
+      
       <div class="nav-controls">
-        <input type="text" id="searchBar" placeholder="Search recipes...">
-        <button id="themeToggle" aria-label="Toggle dark mode"><i class="fas fa-moon"></i></button>
+        <div class="search-wrapper">
+          <i class="fas fa-search search-icon"></i>
+          <input type="text" id="globalSearchBar" placeholder="Search recipes or ingredients..." aria-label="Search recipes" />
+        </div>
+        <button id="themeToggleBtn" class="control-btn" aria-label="Toggle dark mode">
+          <i class="fas fa-moon"></i>
+        </button>
+        <button id="addRecipeBtn" class="primary-btn" aria-label="Add custom recipe">
+          <i class="fas fa-plus"></i> <span>Create Recipe</span>
+        </button>
       </div>
     </div>
   </header>
 
-  <main class="categories">
-    <h2>🍽️ Explore Categories</h2>
-    <div class="grid" id="categoryGrid">
-      <a href="categories/breakfast.html" class="category-card">🥞 Breakfast</a>
-      <a href="categories/lunch.html" class="category-card">🥗 Lunch</a>
-      <a href="categories/dinner.html" class="category-card">🍛 Dinner</a>
-    </div>
+  <!-- Main Views Wrapper -->
+  <main class="main-content" id="viewContainer">
+    
+    <!-- 1. HOME VIEW -->
+    <section id="home-view" class="app-view">
+      <div class="hero-section glass">
+        <div class="hero-content">
+          <span class="badge">💡 Smart Kitchen</span>
+          <h2>Fuel Your Day With Chef-Level Flavor</h2>
+          <p>Ditch the boring instant noodles. Explore easy, delicious, and budget-friendly recipes crafted specifically for college students with interactive tools.</p>
+          <div class="hero-actions">
+            <a href="#/category/breakfast" class="glass-pill-btn"><span class="emoji">🥞</span> Breakfast</a>
+            <a href="#/category/lunch" class="glass-pill-btn"><span class="emoji">🥗</span> Lunch</a>
+            <a href="#/category/dinner" class="glass-pill-btn"><span class="emoji">🍛</span> Dinner</a>
+          </div>
+        </div>
+        <div class="hero-deco">🍳</div>
+      </div>
+
+      <!-- Favorites Section (visible if there are favorites) -->
+      <div id="favorites-shelf" class="view-section hidden">
+        <div class="section-header">
+          <h2><i class="fas fa-heart text-danger"></i> Saved Favorites</h2>
+        </div>
+        <div class="recipe-grid" id="favoritesGrid"></div>
+      </div>
+
+      <!-- Categories Navigation -->
+      <div class="view-section">
+        <div class="section-header">
+          <h2>🍽️ Explore Meal Types</h2>
+        </div>
+        <div class="categories-nav-grid">
+          <a href="#/category/breakfast" class="category-panel breakfast-card">
+            <div class="category-panel-content">
+              <span class="panel-emoji">🥞</span>
+              <h3>Breakfast</h3>
+              <p>Quick fuel for morning lectures</p>
+            </div>
+          </a>
+          <a href="#/category/lunch" class="category-panel lunch-card">
+            <div class="category-panel-content">
+              <span class="panel-emoji">🥗</span>
+              <h3>Lunch</h3>
+              <p>Balanced lunches on the go</p>
+            </div>
+          </a>
+          <a href="#/category/dinner" class="category-panel dinner-card">
+            <div class="category-panel-content">
+              <span class="panel-emoji">🍛</span>
+              <h3>Dinner</h3>
+              <p>Cozy comfort for late nights</p>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- All Recipes Gallery -->
+      <div class="view-section">
+        <div class="section-header">
+          <h2>📚 Cook Book Collection</h2>
+          <div class="tag-filters" id="homeTagFilters">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+        <div class="recipe-grid" id="homeRecipeGrid">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. CATEGORY VIEW -->
+    <section id="category-view" class="app-view hidden">
+      <div class="category-header-banner glass">
+        <a href="#/" class="back-link"><i class="fas fa-arrow-left"></i> Home</a>
+        <h2 id="categoryTitle" class="category-title">Breakfast Recipes</h2>
+        <p id="categoryDescription" class="category-desc">Fuel your morning with healthy, delicious options.</p>
+      </div>
+
+      <div class="toolbar glass">
+        <div class="toolbar-section">
+          <label for="timeFilter"><i class="fas fa-clock"></i> Cook Time:</label>
+          <select id="timeFilter" class="toolbar-select">
+            <option value="all">Any Duration</option>
+            <option value="10">Under 10 mins</option>
+            <option value="20">Under 20 mins</option>
+            <option value="30">Under 30 mins</option>
+          </select>
+        </div>
+        <div class="toolbar-section">
+          <label for="dietFilter"><i class="fas fa-seedling"></i> Diet Tag:</label>
+          <select id="dietFilter" class="toolbar-select">
+            <option value="all">All Diets</option>
+            <option value="vegetarian">Vegetarian</option>
+            <option value="vegan">Vegan</option>
+            <option value="gluten-free">Gluten-Free</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="recipe-grid" id="categoryRecipeGrid">
+        <!-- Populated by JS -->
+      </div>
+    </section>
+
+    <!-- 3. RECIPE DETAIL VIEW -->
+    <section id="recipe-view" class="app-view hidden">
+      <div class="recipe-detail-container">
+        <!-- Back Navigation & Quick Actions -->
+        <div class="recipe-top-bar">
+          <a href="#/" id="recipeBackBtn" class="back-link"><i class="fas fa-arrow-left"></i> Back</a>
+          <div class="recipe-actions">
+            <button id="favoriteToggleBtn" class="recipe-action-btn" aria-label="Save to favorites">
+              <i class="far fa-heart"></i>
+            </button>
+            <button id="recipePrintBtn" class="recipe-action-btn" aria-label="Print recipe">
+              <i class="fas fa-print"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Recipe Hero Banner -->
+        <div class="recipe-hero glass">
+          <div class="recipe-hero-image-wrapper">
+            <img id="recipeImage" src="" alt="Recipe image" class="recipe-hero-img" />
+          </div>
+          <div class="recipe-hero-info">
+            <div class="recipe-tags" id="recipeTags">
+              <!-- Populated by JS -->
+            </div>
+            <h2 id="recipeTitleText" class="recipe-title-text">Mixed Dal Tadka</h2>
+            <p id="recipeTagline" class="recipe-tagline-text">Creamy lentils tempered with cumin, garlic and ghee.</p>
+            
+            <!-- Rating Display -->
+            <div class="recipe-rating-header">
+              <div class="stars-display" id="avgStarsDisplay">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="far fa-star"></i>
+              </div>
+              <span id="avgRatingText" class="rating-text">(4.2 / 5.0)</span>
+            </div>
+
+            <!-- Recipe Stats Grid -->
+            <div class="recipe-stats-grid">
+              <div class="stat-card glass">
+                <i class="fas fa-utensils"></i>
+                <span>Prep Time</span>
+                <strong id="statPrepTime">10 mins</strong>
+              </div>
+              <div class="stat-card glass">
+                <i class="fas fa-fire"></i>
+                <span>Cook Time</span>
+                <strong id="statCookTime">15 mins</strong>
+              </div>
+              <div class="stat-card glass">
+                <i class="fas fa-hourglass-half"></i>
+                <span>Total Time</span>
+                <strong id="statTotalTime">25 mins</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recipe Body Layout -->
+        <div class="recipe-body-grid">
+          <!-- Ingredients & Servings Panel -->
+          <div class="recipe-ingredients-panel glass">
+            <div class="ingredients-header">
+              <h3>📝 Ingredients</h3>
+              <!-- Servings Controller -->
+              <div class="servings-controller">
+                <span class="servings-label">Servings:</span>
+                <div class="servings-stepper">
+                  <button id="servingsMinus" class="stepper-btn" aria-label="Decrease servings">-</button>
+                  <span id="servingsValue" class="servings-num">2</span>
+                  <button id="servingsPlus" class="stepper-btn" aria-label="Increase servings">+</button>
+                </div>
+              </div>
+            </div>
+            <p class="checkbox-instruction"><i class="fas fa-info-circle"></i> Check off ingredients as you prepare them:</p>
+            <ul class="ingredients-list" id="recipeIngredientsList">
+              <!-- Populated by JS -->
+            </ul>
+          </div>
+
+          <!-- Instructions & Method Panel -->
+          <div class="recipe-instructions-panel glass">
+            <div class="instructions-header">
+              <h3>👩‍🍳 Method</h3>
+              <button id="startCookingBtn" class="cooking-cta-btn"><i class="fas fa-play"></i> Start Cooking Mode</button>
+            </div>
+            <ol class="instructions-steps-list" id="recipeInstructionsList">
+              <!-- Populated by JS -->
+            </ol>
+          </div>
+        </div>
+
+        <!-- Personal Review & Kitchen Notes Panel -->
+        <div class="recipe-feedback-section glass">
+          <h3>✍️ Kitchen Notes & Rating</h3>
+          <p class="section-desc">Record your experience with this recipe. Your private ratings and notes are saved directly to this browser.</p>
+          
+          <div class="rating-note-editor">
+            <div class="user-star-input">
+              <span class="input-label">Your Rating:</span>
+              <div class="stars-input" id="userStarsInput">
+                <i class="far fa-star star-star" data-rating="1"></i>
+                <i class="far fa-star star-star" data-rating="2"></i>
+                <i class="far fa-star star-star" data-rating="3"></i>
+                <i class="far fa-star star-star" data-rating="4"></i>
+                <i class="far fa-star star-star" data-rating="5"></i>
+              </div>
+            </div>
+            <div class="note-input-wrapper">
+              <label for="userNotesInput">Kitchen Notes:</label>
+              <textarea id="userNotesInput" placeholder="How did it turn out? Any modifications? (e.g. Added cilantro, extra spice...)" rows="3"></textarea>
+            </div>
+            <button id="saveFeedbackBtn" class="primary-btn save-feedback-btn">Save Notes & Rating</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
   </main>
 
-  <footer>
-    <p>&copy; 2025 Campus Cravings | Designed for Academic Excellence</p>
+  <!-- Global Footer -->
+  <footer class="app-footer glass">
+    <div class="footer-container">
+      <p>&copy; 2026 Campus Cravings | Fueling academic minds with premium flavors</p>
+      <div class="footer-links">
+        <a href="#/"><i class="fas fa-home"></i> Home</a>
+        <a href="#/category/breakfast">🥞 Breakfast</a>
+        <a href="#/category/lunch">🥗 Lunch</a>
+        <a href="#/category/dinner">🍛 Dinner</a>
+      </div>
+    </div>
   </footer>
+
+  <!-- 4. FULLSCREEN DISTRACTION-FREE COOKING MODE OVERLAY -->
+  <div id="cookingModeOverlay" class="cooking-overlay hidden">
+    <div class="cooking-overlay-container glass">
+      
+      <!-- Overlay Header -->
+      <div class="cooking-overlay-header">
+        <div class="cooking-overlay-title">
+          <span id="cookingRecipeIcon">🍳</span>
+          <h3 id="cookingRecipeTitle">Fluffy Pancakes</h3>
+        </div>
+        <button id="closeCookingBtn" class="close-overlay-btn" aria-label="Exit Cooking Mode">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <!-- Cooking Progress Bar -->
+      <div class="cooking-progress-container">
+        <div class="progress-bar-track">
+          <div id="cookingProgressBar" class="progress-bar-fill" style="width: 0%;"></div>
+        </div>
+        <div class="progress-labels">
+          <span id="cookingStepIndexText">Step 1 of 5</span>
+          <span id="cookingPercentText">0% Complete</span>
+        </div>
+      </div>
+
+      <!-- Active Step Panel -->
+      <div class="active-step-panel glass">
+        <p id="activeStepText" class="active-step-text">Mix the dry ingredients (flour, sugar, baking powder) together in a bowl.</p>
+        
+        <!-- Voice Reading Trigger -->
+        <button id="voiceSpeakBtn" class="voice-speak-btn" aria-label="Read step aloud">
+          <i class="fas fa-volume-up"></i> Listen to step
+        </button>
+      </div>
+
+      <!-- Cooking Mode Tools: Timer & Navigation -->
+      <div class="cooking-tools-row">
+        <!-- Integrated Step Timer -->
+        <div class="cooking-timer-card glass" id="cookingTimerCard">
+          <div class="timer-title"><i class="fas fa-hourglass-start"></i> Step Timer</div>
+          <div class="timer-display" id="timerDisplay">05:00</div>
+          <div class="timer-controls">
+            <button id="timerToggleBtn" class="timer-btn" aria-label="Start or pause timer"><i class="fas fa-play"></i> Start</button>
+            <button id="timerResetBtn" class="timer-btn secondary" aria-label="Reset timer"><i class="fas fa-redo"></i> Reset</button>
+          </div>
+          <div class="timer-presets" id="timerPresets">
+            <button class="preset-btn" data-time="60">1m</button>
+            <button class="preset-btn" data-time="300">5m</button>
+            <button class="preset-btn" data-time="600">10m</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stepper Controls -->
+      <div class="cooking-navigation-row">
+        <button id="prevStepBtn" class="nav-step-btn" disabled><i class="fas fa-chevron-left"></i> Previous</button>
+        <button id="nextStepBtn" class="nav-step-btn primary-highlight">Next Step <i class="fas fa-chevron-right"></i></button>
+      </div>
+
+    </div>
+
+    <!-- Celebration Screen (At the end) -->
+    <div id="cookingCelebrationScreen" class="celebration-screen hidden glass">
+      <div class="celebration-content">
+        <span class="celebration-emoji">🎉</span>
+        <h2>Chef Mode Completed!</h2>
+        <p>Your culinary creation is ready. Enjoy your delicious meal, and keep fueling your brilliance!</p>
+        <div class="celebration-actions">
+          <button id="finishCookingBtn" class="primary-btn">Finish cooking</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. SLEEK ADD RECIPE MODAL -->
+  <div id="addRecipeModal" class="modal-overlay hidden">
+    <div class="modal-container glass">
+      <div class="modal-header">
+        <h2><i class="fas fa-utensils"></i> Create Custom Recipe</h2>
+        <button id="closeModalBtn" class="close-modal-btn" aria-label="Close modal">&times;</button>
+      </div>
+      
+      <form id="customRecipeForm" class="modal-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="formRecipeName">Recipe Title *</label>
+            <input type="text" id="formRecipeName" required placeholder="e.g. Avocado Toast" />
+          </div>
+          <div class="form-group">
+            <label for="formRecipeCategory">Meal Category *</label>
+            <select id="formRecipeCategory" required>
+              <option value="breakfast">🥞 Breakfast</option>
+              <option value="lunch">🥗 Lunch</option>
+              <option value="dinner">🍛 Dinner</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="formRecipeTagline">Short Tagline *</label>
+          <input type="text" id="formRecipeTagline" required placeholder="e.g. Creamy avocado with chili flakes on sourdough" />
+        </div>
+
+        <div class="form-row three-cols">
+          <div class="form-group">
+            <label for="formPrepTime">Prep Time (mins) *</label>
+            <input type="number" id="formPrepTime" min="0" required placeholder="e.g. 5" />
+          </div>
+          <div class="form-group">
+            <label for="formCookTime">Cook Time (mins) *</label>
+            <input type="number" id="formCookTime" min="0" required placeholder="e.g. 5" />
+          </div>
+          <div class="form-group">
+            <label for="formServings">Default Servings *</label>
+            <input type="number" id="formServings" min="1" required placeholder="e.g. 1" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="formTags">Dietary/Style Tags (comma-separated)</label>
+          <input type="text" id="formTags" placeholder="e.g. Vegetarian, Healthy, Quick" />
+        </div>
+
+        <div class="form-group">
+          <label>Ingredients * <span class="help-text">(Enter one ingredient per line, format: qty unit ingredient_name. e.g. 1 cup flour)</span></label>
+          <textarea id="formIngredients" rows="4" required placeholder="1 slice sourdough bread&#10;1/2 avocado&#10;1 pinch chili flakes&#10;Salt and pepper to taste"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Instructions * <span class="help-text">(Enter one cooking step per line)</span></label>
+          <textarea id="formInstructions" rows="4" required placeholder="Toast the sourdough bread.&#10;Mash avocado in a bowl with salt and pepper.&#10;Spread avocado on the toasted bread.&#10;Sprinkle chili flakes on top and serve."></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" id="cancelFormBtn" class="btn secondary">Cancel</button>
+          <button type="submit" class="btn primary">Save Recipe</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
 </body>
 </html>
