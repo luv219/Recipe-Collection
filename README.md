@@ -73,7 +73,6 @@ campus-cravings/
 
 This project demonstrates:
 
-* Semantic, accessible HTML5 practices
 * Responsive design with Grid/Flexbox
 * JS-based interactivity (toggle + search)
 * UI/UX sensibility through visuals and structure
